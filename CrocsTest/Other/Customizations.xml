@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ImportExportXml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Entities />
+  <Roles />
+  <Workflows />
+  <FieldSecurityProfiles />
+  <Templates />
+  <EntityMaps />
+  <EntityRelationships />
+  <OrganizationSettings />
+  <optionsets />
+  <CustomControls />
+  <EntityDataProviders />
+  <connectionreferences>
+    <connectionreference connectionreferencelogicalname="con_crox_sharedexcelonlinebusiness_1d25d">
+      <connectionreferencedisplayname>Excel Online (Business) CrocsTest-1d25d</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_sharedexcelonlinebusiness_2cbed">
+      <connectionreferencedisplayname>Excel Online (Business) CrocsTest-2cbed</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_sharedexcelonlinebusiness_5f9ce">
+      <connectionreferencedisplayname>Excel Online (Business) CrocsTest-5f9ce</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_sharedoffice365_5571b">
+      <connectionreferencedisplayname>Office 365 Outlook CrocsTest-5571b</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_office365</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_sharedoffice365_5a675">
+      <connectionreferencedisplayname>Office 365 Outlook CrocsTest-5a675</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_office365</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_sharedonedriveforbusiness_52a49">
+      <connectionreferencedisplayname>OneDrive for Business CrocsTest-52a49</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_sharedonedriveforbusiness_ef32e">
+      <connectionreferencedisplayname>OneDrive for Business CrocsTest-ef32e</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_sharedsharepointonline_07a04">
+      <connectionreferencedisplayname>SharePoint CrocsTest-07a04</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_sharedsharepointonline_4e378">
+      <connectionreferencedisplayname>SharePoint CrocsTest-4e378</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_sharepointonline</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_shareduiflow_1187f">
+      <connectionreferencedisplayname>Desktop flows CrocsTest-1187f</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_uiflow</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_shareduiflow_1aca7">
+      <connectionreferencedisplayname>Desktop flows CrocsTest-1aca7</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_uiflow</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_shareduiflow_452b5">
+      <connectionreferencedisplayname>Desktop flows CrocsTest-452b5</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_uiflow</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_shareduiflow_5d444">
+      <connectionreferencedisplayname>Desktop flows CrocsTest-5d444</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_uiflow</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+    <connectionreference connectionreferencelogicalname="con_crox_shareduiflow_677eb">
+      <connectionreferencedisplayname>Desktop flows CrocsTest-677eb</connectionreferencedisplayname>
+      <connectorid>/providers/Microsoft.PowerApps/apis/shared_uiflow</connectorid>
+      <iscustomizable>1</iscustomizable>
+      <statecode>0</statecode>
+      <statuscode>1</statuscode>
+    </connectionreference>
+  </connectionreferences>
+  <Languages>
+    <Language>1033</Language>
+  </Languages>
+</ImportExportXml>

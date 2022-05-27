@@ -1,0 +1,897 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_excelonlinebusiness_3": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "con_crox_sharedexcelonlinebusiness_5f9ce"
+        },
+        "api": {
+          "name": "shared_excelonlinebusiness"
+        }
+      },
+      "shared_sharepointonline_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "con_crox_sharedsharepointonline_07a04"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_sharepointonline_2": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "con_crox_sharedsharepointonline_4e378"
+        },
+        "api": {
+          "name": "shared_sharepointonline"
+        }
+      },
+      "shared_excelonlinebusiness_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "con_crox_sharedexcelonlinebusiness_1d25d"
+        },
+        "api": {
+          "name": "shared_excelonlinebusiness"
+        }
+      },
+      "shared_uiflow_3": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "con_crox_shareduiflow_452b5"
+        },
+        "api": {
+          "name": "shared_uiflow"
+        }
+      },
+      "shared_office365_2": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "con_crox_sharedoffice365_5a675"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      },
+      "shared_office365_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "con_crox_sharedoffice365_5571b"
+        },
+        "api": {
+          "name": "shared_office365"
+        }
+      },
+      "shared_onedriveforbusiness_1": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "con_crox_sharedonedriveforbusiness_ef32e"
+        },
+        "api": {
+          "name": "shared_onedriveforbusiness"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "New_Email_Received": {
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "metadata": {
+            "operationMetadataId": "7345d44c-87f3-4232-9eb0-7dc41230171c"
+          },
+          "type": "OpenApiConnectionNotification",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365_1",
+              "operationId": "OnNewEmailV3",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "folderPath": "Inbox",
+              "includeAttachments": true,
+              "subjectFilter": "Mass Sales Order Change",
+              "importance": "Any",
+              "fetchOnlyWithAttachment": true
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Do_until": {
+          "actions": {
+            "List_rows_present_in_a_table": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "04d2a004-cdf6-4789-9025-a82c774748b8",
+                "tableId": "Orders"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_excelonlinebusiness_3",
+                  "operationId": "GetItems",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+                },
+                "parameters": {
+                  "source": "me",
+                  "drive": "b!3STUphOTrES4W5ORUMpP0ZHfpsD17I9Ahiu0rDfzA1WzRKhPXzYaR6yZXLPSaUDM",
+                  "file": "@variables('PathofFile')",
+                  "table": "Orders",
+                  "$top": "@variables('NoOfBots')",
+                  "$skip": "@variables('skipCount')",
+                  "dateTimeFormat": "ISO 8601"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            },
+            "Create_CSV_table": {
+              "runAfter": {
+                "List_rows_present_in_a_table": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9abf07a9-f0d9-411f-a54c-d8d0ed1691c0"
+              },
+              "type": "Table",
+              "inputs": {
+                "from": "@outputs('List_rows_present_in_a_table')?['body/value']",
+                "format": "CSV"
+              }
+            },
+            "Update_skipCount": {
+              "runAfter": {
+                "Create_Input_Files": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "007eaa55-598a-4e14-be71-dcd4d2dbe17a"
+              },
+              "type": "IncrementVariable",
+              "inputs": {
+                "name": "skipCount",
+                "value": "@variables('NoOfBots')"
+              }
+            },
+            "Update_File_Name": {
+              "runAfter": {
+                "Update_skipCount": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "f282c03e-8187-4859-9ebd-06ce19bfdb16"
+              },
+              "type": "IncrementVariable",
+              "inputs": {
+                "name": "fileName",
+                "value": 1
+              }
+            },
+            "Create_Input_Files": {
+              "runAfter": {
+                "Create_CSV_table": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "813ed117-d1fa-4a47-9358-6d87354f2a40"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_sharepointonline_1",
+                  "operationId": "CreateFile",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                },
+                "parameters": {
+                  "dataset": "https://crocsconnect-my.sharepoint.com/personal/thassan_crocs_com/_layouts/15/onedrive.aspx",
+                  "folderPath": "/Documents/SAP",
+                  "name": "BotInputFile_@{variables('fileName')}.csv",
+                  "body": "@body('Create_CSV_table')"
+                },
+                "authentication": "@parameters('$authentication')"
+              },
+              "runtimeConfiguration": {
+                "contentTransfer": {
+                  "transferMode": "Chunked"
+                }
+              }
+            }
+          },
+          "runAfter": {
+            "No_of_bots": [
+              "Succeeded"
+            ]
+          },
+          "expression": "@equals(variables('skipCount'), variables('Length'))",
+          "limit": {
+            "count": 60,
+            "timeout": "PT1H"
+          },
+          "metadata": {
+            "operationMetadataId": "effc728a-69eb-4eb9-ae50-a108c6e9777d"
+          },
+          "type": "Until"
+        },
+        "Save_Source_File": {
+          "foreach": "@triggerOutputs()?['body/attachments']",
+          "actions": {
+            "Create_File": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "974459c2-b132-4a97-8bc6-1cc7240f7533"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_sharepointonline_2",
+                  "operationId": "CreateFile",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+                },
+                "parameters": {
+                  "dataset": "https://crocsconnect-my.sharepoint.com/personal/thassan_crocs_com/_layouts/15/onedrive.aspx",
+                  "folderPath": "/Documents/SAP",
+                  "name": "1_MainInputFile_csv.xlsx",
+                  "body": "@items('Save_Source_File')?['contentBytes']"
+                },
+                "authentication": "@parameters('$authentication')"
+              },
+              "runtimeConfiguration": {
+                "contentTransfer": {
+                  "transferMode": "Chunked"
+                }
+              }
+            },
+            "Set_File_Path": {
+              "runAfter": {
+                "Create_File": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "9bc5da3f-217e-4549-a9c2-95751e3610b8"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "PathofFile",
+                "value": "@outputs('Create_File')?['body/Path']"
+              }
+            }
+          },
+          "runAfter": {
+            "File_Path": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fb34ebab-1631-4f0e-892d-5ea38772f01d"
+          },
+          "type": "Foreach"
+        },
+        "File_Path": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "f4a82f67-680d-4401-9cb3-7438124a258d"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "PathofFile",
+                "type": "string"
+              }
+            ]
+          }
+        },
+        "List_rows_present_in_source_file": {
+          "runAfter": {
+            "Save_Source_File": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "6a75a006-4ea6-4fe8-91b3-83b9613a5a0b",
+            "tableId": "Orders"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_excelonlinebusiness_1",
+              "operationId": "GetItems",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+            },
+            "parameters": {
+              "source": "me",
+              "drive": "b!3STUphOTrES4W5ORUMpP0ZHfpsD17I9Ahiu0rDfzA1WzRKhPXzYaR6yZXLPSaUDM",
+              "file": "@variables('PathofFile')",
+              "table": "Orders",
+              "dateTimeFormat": "ISO 8601"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Length_of_Rows_in_source_file": {
+          "runAfter": {
+            "File_Name_for_different_files_": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "390e1f22-7fce-4aef-acf6-1a2e0f534ee6"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Length",
+                "type": "integer",
+                "value": "@length(body('List_rows_present_in_source_file')?['value'])"
+              }
+            ]
+          }
+        },
+        "Skip_Count": {
+          "runAfter": {
+            "Length_of_Rows_in_source_file": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "cd62d79b-9de1-4b27-b500-99aa6f831d03"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "skipCount",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "No_of_bots": {
+          "runAfter": {
+            "Skip_Count": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "89175b52-0e58-4b78-a545-da23209c5828"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "NoOfBots",
+                "type": "integer",
+                "value": "@div(variables('Length'), 2)"
+              }
+            ]
+          }
+        },
+        "File_Name_for_different_files_": {
+          "runAfter": {
+            "List_rows_present_in_source_file": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "0202ba28-74da-4846-a390-aca6254844ff"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "fileName",
+                "type": "integer",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "Run_a_flow_built_with_Power_Automate_for_desktop_2": {
+          "runAfter": {
+            "Send_an_email_Notification": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "da156628-5966-4ea6-91bd-5458b656b967"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_uiflow_3",
+              "operationId": "RunUIFlow_V2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_uiflow"
+            },
+            "parameters": {
+              "uiFlowId": "1e08c811-bc82-ec11-8d21-000d3a4c052a",
+              "runMode": "unattended",
+              "item/SAPUsername": "SSALAHUDDIN",
+              "item/SAPUserPassword": "Letmethrough1234@",
+              "item/SystemID": "Q02",
+              "item/ClientID": "200",
+              "item/FromEmail": "zainab.shabbir@confiz.com",
+              "item/Username": "zshabbir",
+              "item/FileName": "BotInputFile_2.csv",
+              "item/BotID": "Bot2"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Condition": {
+          "actions": {
+            "Send_an_email_(V2)": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "106ce5f3-3dfa-420f-aeae-c4ffb119ce80"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_office365_2",
+                  "operationId": "SendEmailV2",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                },
+                "parameters": {
+                  "emailMessage/To": "@triggerOutputs()?['body/from']",
+                  "emailMessage/Subject": "Mass documents change [Update Completed]",
+                  "emailMessage/Body": "<p>Good Day,<br>\n<br>\nThe update request was completed successfully. There were 0 errors.<br>\n<br>\n<a href=\"https://app.powerbi.com/groups/me/reports/63563054-dcb3-4dd4-8377-0f512ac3e4a2/ReportSection\">RPA Dashboard</a> <br>\n<br>\n<br>\nThanks,<br>\nCrocs Automation&nbsp;</p>",
+                  "emailMessage/Bcc": "zshabbir@crocs.com",
+                  "emailMessage/Attachments": [
+                    {
+                      "Name": "Mass Sales Order Change.xlsx",
+                      "ContentBytes": "@body('Get_file_content_using_path')"
+                    }
+                  ]
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "Get_file_content_using_path": [
+              "Succeeded"
+            ]
+          },
+          "else": {
+            "actions": {
+              "Send_an_email_(V2)_2": {
+                "runAfter": {},
+                "metadata": {
+                  "operationMetadataId": "1111beda-7d11-4a10-8b59-40b27a48acbd"
+                },
+                "type": "OpenApiConnection",
+                "inputs": {
+                  "host": {
+                    "connectionName": "shared_office365_2",
+                    "operationId": "SendEmailV2",
+                    "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+                  },
+                  "parameters": {
+                    "emailMessage/To": "@triggerOutputs()?['body/from']",
+                    "emailMessage/Subject": "Mass documents change [Update Completed]",
+                    "emailMessage/Body": "<p>Good Day,<br>\n<br>\nYour update request has been processed! There were @{variables('UnProcessedCounter')} errors.<br>\n<br>\nThanks,<br>\nCrocs Automation</p>",
+                    "emailMessage/Bcc": "zshabbir@crocs.com",
+                    "emailMessage/Attachments": [
+                      {
+                        "Name": "Mass Sales Order Change.xlsx",
+                        "ContentBytes": "@body('Get_file_content_using_path')"
+                      }
+                    ]
+                  },
+                  "authentication": "@parameters('$authentication')"
+                }
+              }
+            }
+          },
+          "expression": {
+            "equals": [
+              "@empty(outputs('Run_a_flow_built_with_Power_Automate_for_desktop_2')?['body/UnProcessedOrders'])",
+              true
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f3a412b8-06f0-47d6-92d8-0b7dc07a4a3a"
+          },
+          "type": "If"
+        },
+        "Send_an_email_Notification": {
+          "runAfter": {
+            "Do_until": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "f758e623-238a-4284-bd15-486827809f93"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_office365_1",
+              "operationId": "SendEmailV2",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+            },
+            "parameters": {
+              "emailMessage/To": "@triggerOutputs()?['body/from']",
+              "emailMessage/Subject": "Crocs RPA Triggered",
+              "emailMessage/Body": "<p>Hi,<br>\n<br>\nWe have received your file! BOTs have been triggered and are hard at work to process the sales orders. <br>\n<br>\nAn execution report will be sent once completed.<br>\n<br>\nThanks,<br>\nCrocs Automation</p>",
+              "emailMessage/Bcc": "lisaroy@powerplatformops.onmicrosoft.com"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "Compose": {
+          "runAfter": {
+            "Run_a_flow_built_with_Power_Automate_for_desktop_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "df58e15e-5b7a-4e28-9bcd-f11b87e7e745"
+          },
+          "type": "Compose",
+          "inputs": "@concat(outputs('Run_a_flow_built_with_Power_Automate_for_desktop_2')?['body/ProcessedOrders'])"
+        },
+        "Compose_2": {
+          "runAfter": {
+            "Processed_orders_Excel_update": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "df58e15e-5b7a-4e28-9bcd-f11b87e7e745"
+          },
+          "type": "Compose",
+          "inputs": "@concat(array(split(outputs('Run_a_flow_built_with_Power_Automate_for_Desktop_2')?['body/UnProcessedOrders'],' ')))"
+        },
+        "Get_file_content_using_path": {
+          "runAfter": {
+            "Delay": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7d23da0d-d6bf-4596-90b0-aeffbc357c96"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_onedriveforbusiness_1",
+              "operationId": "GetFileContentByPath",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+            },
+            "parameters": {
+              "path": "/SAP/1_MainInputFile_csv.xlsx",
+              "inferContentType": true
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        },
+        "unprocessed_counter": {
+          "runAfter": {
+            "concatenated_unprocessed_orders": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "1c5fe44e-817e-42bb-907c-1c62e4e29cfd"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "UnProcessedCounter",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "concatenated_processed_orders": {
+          "runAfter": {
+            "Compose": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "de15a933-a85b-47e6-8f7e-9d082105a1aa"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ConcatenatedProcessedOrders",
+                "type": "string",
+                "value": "@{outputs('Compose')}"
+              }
+            ]
+          }
+        },
+        "concatenated_unprocessed_orders": {
+          "runAfter": {
+            "Compose_2": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "400b16a0-c863-416e-9b94-dbca8ad8602b"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ConcatenatedUnprocessedOrders",
+                "type": "string",
+                "value": "@{outputs('Compose_2')}"
+              }
+            ]
+          }
+        },
+        "Split_processed_orders_2": {
+          "runAfter": {
+            "Processed_orders_counter_": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e70ba3b4-07bf-4ebc-be26-a63e07e5244c"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "Test",
+                "type": "array"
+              }
+            ]
+          }
+        },
+        "split_Unprocessed_orders": {
+          "runAfter": {
+            "unprocessed_counter": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e70ba3b4-07bf-4ebc-be26-a63e07e5244c"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "UnProcessedOrders",
+                "type": "array"
+              }
+            ]
+          }
+        },
+        "Processed_orders_Excel_update": {
+          "actions": {
+            "Apply_to_each_3": {
+              "foreach": "@variables('Test')",
+              "actions": {
+                "Update_a_row_3": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "d945011c-4cf4-4c79-ba0f-86adf1a3867e",
+                    "tableId": "Orders"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_excelonlinebusiness_3",
+                      "operationId": "PatchItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+                    },
+                    "parameters": {
+                      "source": "me",
+                      "drive": "b!3STUphOTrES4W5ORUMpP0ZHfpsD17I9Ahiu0rDfzA1WzRKhPXzYaR6yZXLPSaUDM",
+                      "file": "/SAP/1_MainInputFile_csv.xlsx",
+                      "table": "Orders",
+                      "idColumn": "Sales Document",
+                      "id": "@int(variables('Test')?[variables('ProcessedOrdersCounter')])"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Increment_variable_3": {
+                  "runAfter": {
+                    "Update_a_row_3": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "781cb069-d90a-4f02-968e-9d5758a6dd7b"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "ProcessedOrdersCounter",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "Set_variable": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "276246b2-23ae-461d-86ba-c0c3c9cf3956"
+              },
+              "type": "Foreach"
+            },
+            "Set_variable": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "c98ef6c9-be82-4bc9-bc73-04d032e78405"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "Test",
+                "value": "@split(outputs('Compose'), ';')"
+              }
+            }
+          },
+          "runAfter": {
+            "Split_processed_orders_2": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "equals": [
+              "@empty(variables('ConcatenatedProcessedOrders'))",
+              "@false"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "8c8ceaac-8f80-413c-90d0-f5472eb2e3a2"
+          },
+          "type": "If"
+        },
+        "Processed_orders_counter_": {
+          "runAfter": {
+            "concatenated_processed_orders": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "e70ba3b4-07bf-4ebc-be26-a63e07e5244c"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ProcessedOrdersCounter",
+                "type": "integer",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "UnProcessed_orders_Excel_update": {
+          "actions": {
+            "Apply_to_each": {
+              "foreach": "@variables('UnProcessedOrders')",
+              "actions": {
+                "Update_a_row": {
+                  "runAfter": {},
+                  "metadata": {
+                    "operationMetadataId": "cb1fe5dd-9012-4132-bff6-81e2aaa067dd",
+                    "tableId": "Orders"
+                  },
+                  "type": "OpenApiConnection",
+                  "inputs": {
+                    "host": {
+                      "connectionName": "shared_excelonlinebusiness_3",
+                      "operationId": "PatchItem",
+                      "apiId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+                    },
+                    "parameters": {
+                      "source": "me",
+                      "drive": "b!3STUphOTrES4W5ORUMpP0ZHfpsD17I9Ahiu0rDfzA1WzRKhPXzYaR6yZXLPSaUDM",
+                      "file": "/SAP/1_MainInputFile_csv.xlsx",
+                      "table": "Orders",
+                      "idColumn": "Sales Document",
+                      "id": "@int(variables('UnProcessedOrders')[variables('UnProcessedCounter')])"
+                    },
+                    "authentication": "@parameters('$authentication')"
+                  }
+                },
+                "Increment_variable": {
+                  "runAfter": {
+                    "Update_a_row": [
+                      "Succeeded"
+                    ]
+                  },
+                  "metadata": {
+                    "operationMetadataId": "481135c8-157b-4ea2-96b4-b4e2aa3a9e83"
+                  },
+                  "type": "IncrementVariable",
+                  "inputs": {
+                    "name": "UnProcessedCounter",
+                    "value": 1
+                  }
+                }
+              },
+              "runAfter": {
+                "Set_variable_2": [
+                  "Succeeded"
+                ]
+              },
+              "metadata": {
+                "operationMetadataId": "448701d6-4098-4b37-b6a4-d7b0695e2590"
+              },
+              "type": "Foreach"
+            },
+            "Set_variable_2": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "112267f9-64cc-4751-9b18-da9d2a0fde7f"
+              },
+              "type": "SetVariable",
+              "inputs": {
+                "name": "UnProcessedOrders",
+                "value": "@split(outputs('Compose_2'), ';')"
+              }
+            }
+          },
+          "runAfter": {
+            "split_Unprocessed_orders": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "not": {
+              "contains": [
+                "@variables('ConcatenatedUnprocessedOrders')",
+                "@'[\"\"];[\"\"]'"
+              ]
+            }
+          },
+          "metadata": {
+            "operationMetadataId": "16641f65-968f-4997-a436-76a8cc8eed40"
+          },
+          "type": "If"
+        },
+        "Delay": {
+          "runAfter": {
+            "UnProcessed_orders_Excel_update": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "88b9d643-12c4-4725-803a-482aa779a361"
+          },
+          "type": "Wait",
+          "inputs": {
+            "interval": {
+              "count": 30,
+              "unit": "Second"
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemaVersion": "1.0.0.0"
+}
