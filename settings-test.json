@@ -1,0 +1,60 @@
+{
+  "EnvironmentVariables": [],
+  "ConnectionReferences": [
+    {
+      "LogicalName": "cr0bf_sharedexcelonlinebusiness_46151",
+      "ConnectionId": "112033af2f6e47388f656110ef067d5f",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+    },
+    {
+      "LogicalName": "cr0bf_sharedexcelonlinebusiness_5ac45",
+      "ConnectionId": "112033af2f6e47388f656110ef067d5f",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+    },
+    {
+      "LogicalName": "cr0bf_sharedexcelonlinebusiness_6b65c",
+      "ConnectionId": "112033af2f6e47388f656110ef067d5f",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+    },
+    {
+      "LogicalName": "cr0bf_sharedexcelonlinebusiness_814fc",
+      "ConnectionId": "112033af2f6e47388f656110ef067d5f",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+    },
+    {
+      "LogicalName": "cr0bf_sharedexcelonlinebusiness_cb000",
+      "ConnectionId": "112033af2f6e47388f656110ef067d5f",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_excelonlinebusiness"
+    },
+    {
+      "LogicalName": "cr0bf_sharedoffice365_08f79",
+      "ConnectionId": "17e234956efb4586a8048507b175b759",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+    },
+    {
+      "LogicalName": "cr0bf_sharedoffice365_95b55",
+      "ConnectionId": "17e234956efb4586a8048507b175b759",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_office365"
+    },
+    {
+      "LogicalName": "cr0bf_sharedonedriveforbusiness_b574b",
+      "ConnectionId": "7474778105774b4b87a75a6e0308bf24",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_onedriveforbusiness"
+    },
+    {
+      "LogicalName": "cr0bf_sharedsharepointonline_16ed1",
+      "ConnectionId": "c555fa1e53e0496b8a351cd08d3474fc",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    },
+    {
+      "LogicalName": "cr0bf_sharedsharepointonline_7ecc1",
+      "ConnectionId": "c555fa1e53e0496b8a351cd08d3474fc",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    },
+    {
+      "LogicalName": "cr0bf_sharedsharepointonline_afed9",
+      "ConnectionId": "c555fa1e53e0496b8a351cd08d3474fc",
+      "ConnectorId": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline"
+    }
+  ]
+}
